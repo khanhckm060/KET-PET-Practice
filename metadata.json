@@ -1,0 +1,5 @@
+{
+  "name": "Cambridge Exam Master",
+  "description": "Interactive learning platform for KET, PET, and FCE exams with AI-powered Speaking examiner and automated PDF exam parsing.",
+  "requestFramePermissions": ["microphone"]
+}

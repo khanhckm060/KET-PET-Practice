@@ -1,0 +1,57 @@
+{
+  "entities": {
+    "Exam": {
+      "title": "Exam",
+      "description": "A Cambridge English exam paper",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "level": { "type": "string", "enum": ["KET", "PET", "FCE"] },
+        "parts": { "type": "array" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "level", "parts"]
+    },
+    "User": {
+      "title": "User",
+      "description": "App user profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["student", "admin"] },
+        "displayName": { "type": "string" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "ExamSession": {
+      "title": "ExamSession",
+      "description": "A student's exam attempt",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "examId": { "type": "string" },
+        "level": { "type": "string" },
+        "mode": { "type": "string" },
+        "score": { "type": "number" },
+        "feedback": { "type": "object" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "level", "mode", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/exams/{examId}": {
+      "schema": "Exam",
+      "description": "Collection of available exam papers"
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile data"
+    },
+    "/sessions/{sessionId}": {
+      "schema": "ExamSession",
+      "description": "History of exam attempts"
+    }
+  }
+}

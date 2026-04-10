@@ -1,0 +1,108 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId}
+    // Fields:
+    //   - uid: string (required) - User's unique ID
+    //   - email: string (required) - User's email
+    //   - role: string (required, ['student', 'admin']) - User's role
+    //   - displayName: string (optional) - User's display name
+    //
+    // Collection: exams
+    // Document ID: {examId}
+    // Fields:
+    //   - title: string (required) - Exam title
+    //   - level: string (required, ['KET', 'PET', 'FCE']) - Exam level
+    //   - parts: list (required) - List of exam parts
+    //   - createdAt: timestamp (required) - Creation time
+    //
+    // Collection: sessions
+    // Document ID: {sessionId}
+    // Fields:
+    //   - userId: string (required) - ID of the student
+    //   - level: string (required) - Exam level
+    //   - mode: string (required) - Exam mode
+    //   - score: number (optional) - Score achieved
+    //   - feedback: map (optional) - AI feedback
+    //   - timestamp: timestamp (required) - Time of attempt
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         (request.auth.token.email == "khanhckm060@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // ===============================================================
+    // Validation Functions
+    // ===============================================================
+
+    function isValidUser(data) {
+      return data.uid is string && data.uid.size() > 0 &&
+             data.email is string && isValidEmail(data.email) &&
+             data.role in ['student', 'admin'];
+    }
+
+    function isValidExam(data) {
+      return data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.level in ['KET', 'PET', 'FCE'] &&
+             data.parts is list && data.parts.size() <= 20;
+    }
+
+    function isValidSession(data) {
+      return data.userId == request.auth.uid &&
+             data.level is string &&
+             data.mode is string &&
+             (!('score' in data) || data.score is number);
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isAuthenticated() && isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == 'student';
+      allow update: if isOwner(userId) && isValidUser(request.resource.data) && request.resource.data.role == resource.data.role;
+      allow write: if isAdmin();
+    }
+
+    match /exams/{examId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin() && isValidExam(request.resource.data);
+    }
+
+    match /sessions/{sessionId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && isValidSession(request.resource.data);
+      allow update, delete: if isAdmin();
+    }
+  }
+}
