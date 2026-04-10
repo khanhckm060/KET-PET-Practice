@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 import { Mic, MicOff, Play, SkipForward, CheckCircle2, Loader2, MessageSquare } from "lucide-react";
 import { getSpeakingFeedback } from "@/lib/gemini";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/Progress";
+import { Badge } from "@/components/ui/Badge";
 import { db, auth } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { toast } from "sonner";

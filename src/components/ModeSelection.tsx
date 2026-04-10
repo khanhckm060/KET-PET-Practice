@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 import { Headphones, MessageSquare, BookOpen, PenTool, ClipboardCheck, ArrowLeft } from "lucide-react";
 import { ExamLevel } from "@/types";
 
