@@ -4,15 +4,15 @@
  */
 
 import { useState, useEffect } from "react";
-import Onboarding from "./components/Onboarding";
-import ModeSelection from "./components/ModeSelection";
-import AdminDashboard from "./components/AdminDashboard";
-import SpeakingExaminer from "./components/SpeakingExaminer";
-import { ExamLevel } from "./types";
-import { Button } from "./components/ui/button";
+import Onboarding from "@/components/Onboarding";
+import ModeSelection from "@/components/ModeSelection";
+import AdminDashboard from "@/components/AdminDashboard";
+import SpeakingExaminer from "@/components/SpeakingExaminer";
+import { ExamLevel } from "@/types";
+import { Button } from "@/components/ui/button";
 import { Settings, LogOut, LogIn, User as UserIcon } from "lucide-react";
-import { Toaster } from "./components/ui/sonner";
-import { auth, signInWithGoogle, logout, db } from "./lib/firebase";
+import { Toaster } from "@/components/ui/sonner";
+import { auth, signInWithGoogle, logout, db } from "@/lib/firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, getDoc, setDoc } from "firebase/firestore";
 
